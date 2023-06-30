@@ -21,17 +21,17 @@ builder.Services.AddCors(o => o.AddPolicy("corsApp", builder =>
     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 }));
 
-//var connectionString = builder.Configuration.GetConnectionString("webapi_sql_server_db");
-//builder.Services.AddDbContext<DatabaseContext>(opt =>
-//            opt.UseSqlServer(connectionString)
-//            );
-
-var connectionString = builder.Configuration.GetConnectionString("webapi_postgres_db");
+var connectionString = builder.Configuration.GetConnectionString("webapi_sql_server_db");
 builder.Services.AddDbContext<DatabaseContext>(opt =>
-opt.UseNpgsql(connectionString)
-);
+            opt.UseSqlServer(connectionString)
+            );
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+//var connectionString = builder.Configuration.GetConnectionString("webapi_postgres_db");
+//builder.Services.AddDbContext<DatabaseContext>(opt =>
+//opt.UseNpgsql(connectionString)
+//);
+
+//AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddOptions();
 //builder.Services.AddMediatR(typeof(FindPerson.FindPersonRequestHandler).Assembly);
@@ -88,15 +88,13 @@ using (var scope = app.Services.CreateScope())
     var db_context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     var user_manager = scope.ServiceProvider.GetRequiredService<UserManager<SystemUser>>();
     db_context.Database.Migrate();
-    //UserIdentityDataInicializer.Inicialize(db_context, user_manager).Wait();
+    UserIdentityDataInicializer.Inicialize(db_context, user_manager).Wait();
 }
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 
 // Configure the HTTP request pipeline.

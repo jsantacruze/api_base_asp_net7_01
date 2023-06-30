@@ -1,4 +1,5 @@
-﻿using domain_layer.Security;
+﻿using domain_layer.Personas;
+using domain_layer.Security;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,13 @@ namespace data_access
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<TipoSangre>(e => e.ToTable("TipoSangre"));
+            modelBuilder.Entity<Persona>(e => e.ToTable("Persona"));
+
         }
+
+        public DbSet<TipoSangre> TiposSangre { get; set; }
+        public DbSet<Persona> Personas { get; set; }
+
     }
 }
