@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace data_access.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +50,32 @@ namespace data_access.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EstadoCivil",
+                columns: table => new
+                {
+                    estado_civil_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    estado_civil_nombre = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EstadoCivil", x => x.estado_civil_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genero",
+                columns: table => new
+                {
+                    genero_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    genero_nombre = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genero", x => x.genero_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -180,13 +206,29 @@ namespace data_access.Migrations
                     persona_nro_identifacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     persona_apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     persona_nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    persona_direccion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     persona_fecha_nacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     tipo_sangre_id = table.Column<int>(type: "int", nullable: false),
-                    persona_observaciones = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
+                    persona_observaciones = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    estado_civil_id = table.Column<int>(type: "int", nullable: false),
+                    persona_telefono = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    persona_email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    genero_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persona", x => x.persona_id);
+                    table.ForeignKey(
+                        name: "FK_Persona_EstadoCivil_estado_civil_id",
+                        column: x => x.estado_civil_id,
+                        principalTable: "EstadoCivil",
+                        principalColumn: "estado_civil_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Persona_Genero_genero_id",
+                        column: x => x.genero_id,
+                        principalTable: "Genero",
+                        principalColumn: "genero_id");
                     table.ForeignKey(
                         name: "FK_Persona_TipoSangre_tipo_sangre_id",
                         column: x => x.tipo_sangre_id,
@@ -235,6 +277,16 @@ namespace data_access.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Persona_estado_civil_id",
+                table: "Persona",
+                column: "estado_civil_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persona_genero_id",
+                table: "Persona",
+                column: "genero_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Persona_tipo_sangre_id",
                 table: "Persona",
                 column: "tipo_sangre_id");
@@ -266,6 +318,12 @@ namespace data_access.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "EstadoCivil");
+
+            migrationBuilder.DropTable(
+                name: "Genero");
 
             migrationBuilder.DropTable(
                 name: "TipoSangre");

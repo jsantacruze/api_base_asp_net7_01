@@ -16,6 +16,9 @@ namespace domain_layer.Personas
         public string persona_nro_identifacion { get; set; }
         public string persona_apellidos { get; set; }
         public string persona_nombres { get; set; }
+      
+        [StringLength(150)]
+        public string persona_direccion { get; set; }
         public DateTime persona_fecha_nacimiento { get; set; }
 
         public int tipo_sangre_id { get; set; }
@@ -24,5 +27,20 @@ namespace domain_layer.Personas
         public TipoSangre TipoSangre { get; set; }
         [StringLength(255)]
         public string? persona_observaciones { get; set; }
+
+        public int estado_civil_id { get; set; }
+        [ForeignKey("estado_civil_id")]
+        public EstadoCivil EstadoCivil { get; set; }
+
+        [StringLength(30)]
+        public string persona_telefono { get; set; }
+        [StringLength(100)]
+        public string persona_email { get; set; }
+
+        public int? genero_id { get; set; }
+        [ForeignKey("genero_id")]
+        public Genero? Genero { get; set; }
+
+
     }
 }

@@ -1,3 +1,5 @@
+using business_layer.AutoMapper;
+using business_layer.Contracts;
 using data_access;
 using domain_layer.Security;
 using FluentValidation.AspNetCore;
@@ -11,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using security_layer.TokensManager;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,9 +65,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-    //builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
-    //builder.Services.AddScoped<IUserSession, UserSession>();
-    //builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+    builder.Services.AddScoped<IUserSession, UserSession>();
+    builder.Services.AddAutoMapper(typeof(MappingProfile));
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c => {

@@ -155,6 +155,42 @@ namespace data_access.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("domain_layer.Personas.EstadoCivil", b =>
+                {
+                    b.Property<int>("estado_civil_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("estado_civil_id"));
+
+                    b.Property<string>("estado_civil_nombre")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.HasKey("estado_civil_id");
+
+                    b.ToTable("EstadoCivil");
+                });
+
+            modelBuilder.Entity("domain_layer.Personas.Genero", b =>
+                {
+                    b.Property<int>("genero_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("genero_id"));
+
+                    b.Property<string>("genero_nombre")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.HasKey("genero_id");
+
+                    b.ToTable("Genero");
+                });
+
             modelBuilder.Entity("domain_layer.Personas.Persona", b =>
                 {
                     b.Property<int>("persona_id")
@@ -163,9 +199,25 @@ namespace data_access.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("persona_id"));
 
+                    b.Property<int>("estado_civil_id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("genero_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("persona_apellidos")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("persona_direccion")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("persona_email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("persona_fecha_nacimiento")
                         .HasColumnType("datetime2");
@@ -182,10 +234,19 @@ namespace data_access.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("persona_telefono")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<int>("tipo_sangre_id")
                         .HasColumnType("int");
 
                     b.HasKey("persona_id");
+
+                    b.HasIndex("estado_civil_id");
+
+                    b.HasIndex("genero_id");
 
                     b.HasIndex("tipo_sangre_id");
 
@@ -334,13 +395,37 @@ namespace data_access.Migrations
 
             modelBuilder.Entity("domain_layer.Personas.Persona", b =>
                 {
+                    b.HasOne("domain_layer.Personas.EstadoCivil", "EstadoCivil")
+                        .WithMany("lista_personas")
+                        .HasForeignKey("estado_civil_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("domain_layer.Personas.Genero", "Genero")
+                        .WithMany("lista_personas")
+                        .HasForeignKey("genero_id");
+
                     b.HasOne("domain_layer.Personas.TipoSangre", "TipoSangre")
                         .WithMany("lista_personas")
                         .HasForeignKey("tipo_sangre_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("EstadoCivil");
+
+                    b.Navigation("Genero");
+
                     b.Navigation("TipoSangre");
+                });
+
+            modelBuilder.Entity("domain_layer.Personas.EstadoCivil", b =>
+                {
+                    b.Navigation("lista_personas");
+                });
+
+            modelBuilder.Entity("domain_layer.Personas.Genero", b =>
+                {
+                    b.Navigation("lista_personas");
                 });
 
             modelBuilder.Entity("domain_layer.Personas.TipoSangre", b =>

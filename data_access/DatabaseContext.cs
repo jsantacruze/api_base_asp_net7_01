@@ -21,11 +21,14 @@ namespace data_access
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<TipoSangre>(e => e.ToTable("TipoSangre"));
             modelBuilder.Entity<Persona>(e => e.ToTable("Persona"));
+            modelBuilder.Entity<EstadoCivil>(e => e.ToTable("EstadoCivil"));
+            modelBuilder.Entity<Genero>(e => e.ToTable("Genero"));
 
         }
 
         public DbSet<TipoSangre> TiposSangre { get; set; }
         public DbSet<Persona> Personas { get; set; }
-
+        public DbSet<EstadoCivil> EstadosCiviles { get; set; }
+        public DbSet<Genero> Generos { get; set; }
     }
 }
