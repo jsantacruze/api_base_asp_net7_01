@@ -2,11 +2,8 @@
 
 namespace webapi_services.Controllers
 {
-    public class TipoSangreController : Controller
+    public class TipoSangreController : BaseController
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

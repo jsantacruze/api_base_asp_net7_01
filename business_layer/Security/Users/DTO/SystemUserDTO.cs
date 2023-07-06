@@ -1,4 +1,4 @@
-﻿using domain_layer.Admin;
+﻿using business_layer.Admin.DTO;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace domain_layer.Security
+namespace business_layer.Security.Users.DTO
 {
-    public class SystemUser : IdentityUser
+    public class SystemUserDTO : IdentityUserDTO
     {
         public byte[]? ProfilePicture { get; set; }
         public long? empleado_id { get; set; }
-        [ForeignKey("empleado_id ")]
-        public Empleado? Empleado { get; set; }
+        public EmpleadoDTO? Empleado { get; set; }
     }
 }

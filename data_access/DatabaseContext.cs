@@ -1,4 +1,5 @@
-﻿using domain_layer.Personas;
+﻿using domain_layer.Admin;
+using domain_layer.Personas;
 using domain_layer.Security;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace data_access
             modelBuilder.Entity<Persona>(e => e.ToTable("Persona"));
             modelBuilder.Entity<EstadoCivil>(e => e.ToTable("EstadoCivil"));
             modelBuilder.Entity<Genero>(e => e.ToTable("Genero"));
+            modelBuilder.Entity<Empleado>(e => e.ToTable("Empleado"));
 
         }
 
@@ -30,5 +32,6 @@ namespace data_access
         public DbSet<Persona> Personas { get; set; }
         public DbSet<EstadoCivil> EstadosCiviles { get; set; }
         public DbSet<Genero> Generos { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
     }
 }

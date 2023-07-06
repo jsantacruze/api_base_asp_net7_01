@@ -27,7 +27,7 @@ namespace security_layer.TokensManager
                 }
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DigitalsoftToken"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DigitalsoftToken2023@ Token Personalizado DigitalsoftToken2023@ Token Personalizado"));
             var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescripcion = new SecurityTokenDescriptor

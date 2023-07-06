@@ -1,5 +1,6 @@
 using business_layer.AutoMapper;
 using business_layer.Contracts;
+using business_layer.Security.Users;
 using data_access;
 using domain_layer.Security;
 using FluentValidation.AspNetCore;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using security_layer.TokensManager;
 using System.Text;
+using webapi_services.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +39,7 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddOptions();
-//builder.Services.AddMediatR(typeof(FindPerson.FindPersonRequestHandler).Assembly);
+builder.Services.AddMediatR(typeof(LoginUser.Request).Assembly);
 builder.Services.AddControllers(opt => {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     opt.Filters.Add(new AuthorizeFilter(policy));
@@ -54,7 +56,7 @@ identityBuilder.AddEntityFrameworkStores<DatabaseContext>();
 identityBuilder.AddSignInManager<SignInManager<SystemUser>>();
 builder.Services.TryAddSingleton<ISystemClock, SystemClock>();
 
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DigitalsoftToken"));
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DigitalsoftToken2023@ Token Personalizado DigitalsoftToken2023@ Token Personalizado"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt => {
     opt.TokenValidationParameters = new TokenValidationParameters
     {
@@ -83,7 +85,7 @@ builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 app.UseCors("corsApp");
-//app.UseMiddleware<ExceptioManagerMiddleware>();
+app.UseMiddleware<ExceptioManagerMiddleware>();
 
 
 using (var scope = app.Services.CreateScope())

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace data_access.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracionInicial : Migration
+    public partial class V10 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,33 +23,6 @@ namespace data_access.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    empleado_id = table.Column<long>(type: "bigint", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,6 +83,98 @@ namespace data_access.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Persona",
+                columns: table => new
+                {
+                    persona_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    persona_nro_identifacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    persona_apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    persona_nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    persona_direccion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    persona_fecha_nacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    tipo_sangre_id = table.Column<int>(type: "int", nullable: false),
+                    persona_observaciones = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    estado_civil_id = table.Column<int>(type: "int", nullable: false),
+                    persona_telefono = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    persona_email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    genero_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Persona", x => x.persona_id);
+                    table.ForeignKey(
+                        name: "FK_Persona_EstadoCivil_estado_civil_id",
+                        column: x => x.estado_civil_id,
+                        principalTable: "EstadoCivil",
+                        principalColumn: "estado_civil_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Persona_Genero_genero_id",
+                        column: x => x.genero_id,
+                        principalTable: "Genero",
+                        principalColumn: "genero_id");
+                    table.ForeignKey(
+                        name: "FK_Persona_TipoSangre_tipo_sangre_id",
+                        column: x => x.tipo_sangre_id,
+                        principalTable: "TipoSangre",
+                        principalColumn: "tipo_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Empleado",
+                columns: table => new
+                {
+                    persona_id = table.Column<long>(type: "bigint", nullable: false),
+                    empleado_cargo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    empleado_feha_ingreso = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    empleado_fecha_ultima_modificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Empleado", x => x.persona_id);
+                    table.ForeignKey(
+                        name: "FK_Empleado_Persona_persona_id",
+                        column: x => x.persona_id,
+                        principalTable: "Persona",
+                        principalColumn: "persona_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    empleado_id = table.Column<long>(type: "bigint", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Empleado_empleado_id",
+                        column: x => x.empleado_id,
+                        principalTable: "Empleado",
+                        principalColumn: "persona_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -197,46 +262,6 @@ namespace data_access.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Persona",
-                columns: table => new
-                {
-                    persona_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    persona_nro_identifacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    persona_apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    persona_nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    persona_direccion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    persona_fecha_nacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    tipo_sangre_id = table.Column<int>(type: "int", nullable: false),
-                    persona_observaciones = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    estado_civil_id = table.Column<int>(type: "int", nullable: false),
-                    persona_telefono = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    persona_email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    genero_id = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Persona", x => x.persona_id);
-                    table.ForeignKey(
-                        name: "FK_Persona_EstadoCivil_estado_civil_id",
-                        column: x => x.estado_civil_id,
-                        principalTable: "EstadoCivil",
-                        principalColumn: "estado_civil_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Persona_Genero_genero_id",
-                        column: x => x.genero_id,
-                        principalTable: "Genero",
-                        principalColumn: "genero_id");
-                    table.ForeignKey(
-                        name: "FK_Persona_TipoSangre_tipo_sangre_id",
-                        column: x => x.tipo_sangre_id,
-                        principalTable: "TipoSangre",
-                        principalColumn: "tipo_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -268,6 +293,11 @@ namespace data_access.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_empleado_id",
+                table: "AspNetUsers",
+                column: "empleado_id");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -311,13 +341,16 @@ namespace data_access.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Persona");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Empleado");
+
+            migrationBuilder.DropTable(
+                name: "Persona");
 
             migrationBuilder.DropTable(
                 name: "EstadoCivil");

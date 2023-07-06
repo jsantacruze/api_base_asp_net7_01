@@ -2,11 +2,8 @@
 
 namespace webapi_services.Controllers
 {
-    public class PersonaController : Controller
+    public class PersonaController : BaseController
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

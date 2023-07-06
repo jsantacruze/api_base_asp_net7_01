@@ -12,8 +12,8 @@ using data_access;
 namespace data_access.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230703213950_MigracionInicial")]
-    partial class MigracionInicial
+    [Migration("20230706211422_V1.0")]
+    partial class V10
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,7 +173,7 @@ namespace data_access.Migrations
 
                     b.HasKey("estado_civil_id");
 
-                    b.ToTable("EstadoCivil");
+                    b.ToTable("EstadoCivil", (string)null);
                 });
 
             modelBuilder.Entity("domain_layer.Personas.Genero", b =>
@@ -191,16 +191,16 @@ namespace data_access.Migrations
 
                     b.HasKey("genero_id");
 
-                    b.ToTable("Genero");
+                    b.ToTable("Genero", (string)null);
                 });
 
             modelBuilder.Entity("domain_layer.Personas.Persona", b =>
                 {
-                    b.Property<int>("persona_id")
+                    b.Property<long>("persona_id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("persona_id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("persona_id"));
 
                     b.Property<int>("estado_civil_id")
                         .HasColumnType("int");
@@ -254,6 +254,8 @@ namespace data_access.Migrations
                     b.HasIndex("tipo_sangre_id");
 
                     b.ToTable("Persona", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("domain_layer.Personas.TipoSangre", b =>
@@ -342,7 +344,29 @@ namespace data_access.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("empleado_id");
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("domain_layer.Admin.Empleado", b =>
+                {
+                    b.HasBaseType("domain_layer.Personas.Persona");
+
+                    b.Property<string>("empleado_cargo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("empleado_fecha_ultima_modificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("empleado_feha_ingreso")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.ToTable("Empleado", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -419,6 +443,24 @@ namespace data_access.Migrations
                     b.Navigation("Genero");
 
                     b.Navigation("TipoSangre");
+                });
+
+            modelBuilder.Entity("domain_layer.Security.SystemUser", b =>
+                {
+                    b.HasOne("domain_layer.Admin.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("empleado_id");
+
+                    b.Navigation("Empleado");
+                });
+
+            modelBuilder.Entity("domain_layer.Admin.Empleado", b =>
+                {
+                    b.HasOne("domain_layer.Personas.Persona", null)
+                        .WithOne()
+                        .HasForeignKey("domain_layer.Admin.Empleado", "persona_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("domain_layer.Personas.EstadoCivil", b =>
