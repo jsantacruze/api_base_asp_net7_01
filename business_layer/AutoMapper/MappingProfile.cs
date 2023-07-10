@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using business_layer.Admin.DTO;
-using business_layer.Personas;
+using business_layer.Personas.DTO;
 using business_layer.Security.Users.DTO;
 using domain_layer.Admin;
 using domain_layer.Personas;

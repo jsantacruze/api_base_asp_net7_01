@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace business_layer.Personas
+namespace business_layer.Personas.DTO
 {
-    public class EstadoCivilDTO
+    public class GeneroDTO
     {
-        public int estado_civil_id { get; set; }
-        public string estado_civil_nombre { get; set; }
+        public int genero_id { get; set; }
+        public string genero_nombre { get; set; }
     }
 }

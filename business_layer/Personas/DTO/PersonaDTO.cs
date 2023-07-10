@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace business_layer.Personas
+namespace business_layer.Personas.DTO
 {
     public class PersonaDTO
     {
-        public int persona_id { get; set; }
+        public long persona_id { get; set; }
         public string persona_nro_identifacion { get; set; }
         public string persona_apellidos { get; set; }
         public string persona_nombres { get; set; }

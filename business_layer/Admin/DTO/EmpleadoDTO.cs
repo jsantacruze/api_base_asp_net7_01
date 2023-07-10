@@ -1,4 +1,4 @@
-﻿using business_layer.Personas;
+﻿using business_layer.Personas.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
