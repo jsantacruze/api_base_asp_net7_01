@@ -18,5 +18,11 @@ namespace webapi_services.Controllers
         {
             return await Mediator.Send(request);
         }
+
+        [HttpPost("create")]
+        public async Task<PersonaDTO> create(PersonasCreate.Request request)
+        {
+            return await Mediator.Send(request);
+        }
     }
 }
