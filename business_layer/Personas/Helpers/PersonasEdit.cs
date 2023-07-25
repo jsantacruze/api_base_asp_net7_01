@@ -3,8 +3,6 @@ using business_layer.ExceptionsManager;
 using business_layer.Personas.DTO;
 using data_access;
 using domain_layer.Personas;
-using FluentValidation;
-using Google.Protobuf;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,10 +14,11 @@ using System.Threading.Tasks;
 
 namespace business_layer.Personas.Helpers
 {
-    public class PersonasCreate
+    public class PersonasEdit
     {
         public class Request : IRequest<PersonaDTO>
         {
+            public long persona_id { get; set; }
             public string persona_nro_identifacion { get; set; }
             public string persona_apellidos { get; set; }
             public string persona_nombres { get; set; }
@@ -56,31 +55,27 @@ namespace business_layer.Personas.Helpers
                 try
                 {
                     var persona = await _context.Personas
-                        .Where(p => p.persona_nro_identifacion == request.persona_nro_identifacion)
+                        .Where(p => p.persona_id == request.persona_id)
                         .FirstOrDefaultAsync();
 
-                    if (persona != null)
+                    if (persona == null)
                     {
-                        throw new CustomException(HttpStatusCode.InternalServerError,
-                            new { mensaje = "Ya existe una persona con el nro de identificación: " + request.persona_nro_identifacion });
+                        throw new CustomException(HttpStatusCode.BadRequest,
+                            new { mensaje = "No existe una persona con el id especificado: " + request.persona_nro_identifacion });
                     }
 
-                    var nuevo = new Persona()
-                    {
-                        persona_nro_identifacion = request.persona_nro_identifacion,
-                        persona_apellidos = request.persona_apellidos,
-                        persona_nombres = request.persona_nombres,
-                        persona_direccion = request.persona_direccion,
-                        persona_fecha_nacimiento = request.persona_fecha_nacimiento,
-                        tipo_sangre_id = request.tipo_sangre_id,
-                        persona_observaciones = request.persona_observaciones ?? "",
-                        estado_civil_id = request.estado_civil_id,
-                        persona_telefono = request.persona_telefono,
-                        persona_email = request.persona_email,
-                        genero_id = request.genero_id
-                    };
+                    persona.persona_nro_identifacion = request.persona_nro_identifacion;
+                    persona.persona_apellidos = request.persona_apellidos;
+                    persona.persona_nombres = request.persona_nombres;
+                    persona.persona_direccion = request.persona_direccion;
+                    persona.persona_fecha_nacimiento = request.persona_fecha_nacimiento;
+                    persona.tipo_sangre_id = request.tipo_sangre_id;
+                    persona.persona_observaciones = request.persona_observaciones;
+                    persona.estado_civil_id = request.estado_civil_id;
+                    persona.persona_telefono = request.persona_telefono;
+                    persona.persona_email = request.persona_email;
+                    persona.genero_id = request.genero_id;
 
-                    _context.Add(nuevo);
                     int resultBBDD = await _context.SaveChangesAsync();
 
                     PersonaDTO result = new PersonaDTO();
@@ -91,7 +86,7 @@ namespace business_layer.Personas.Helpers
                         .Include(p => p.Genero)
                         .Include(p => p.EstadoCivil)
                         .Include(p => p.TipoSangre)
-                        .Where(p => p.persona_id == nuevo.persona_id)
+                        .Where(p => p.persona_id == request.persona_id)
                         .FirstOrDefaultAsync();
 
                         if (nueva_persona != null)
@@ -113,7 +108,7 @@ namespace business_layer.Personas.Helpers
                     {
                         msg += ex.InnerException.Message;
                     }
-                    throw new CustomException(HttpStatusCode.BadRequest, "No se ha podido crear la persona. Errores:" + msg);
+                    throw new CustomException(HttpStatusCode.BadRequest, "No se ha podido editar la persona. Errores:" + msg);
                 }
             }
         }
